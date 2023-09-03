@@ -4,6 +4,7 @@ using StackExchange.Redis;
 Console.WriteLine("Hello, World!");
 ConnectionMultiplexer redis = ConnectionMultiplexer.Connect("localhost:6379");
 IDatabase db = redis.GetDatabase();
+// String operations
 db.StringSet("mykey", "myvalue");
 string value = db.StringGet("mykey");
 Console.WriteLine(value);
