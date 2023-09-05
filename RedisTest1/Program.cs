@@ -1,28 +1,37 @@
-﻿// See https://aka.ms/new-console-template for more information
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using RedisTest1;
 using StackExchange.Redis;
+using System.Collections.Concurrent;
+using System.Net;
+using System.Threading.Channels;
 
-Console.WriteLine("Hello, World!");
-ConnectionMultiplexer redis = ConnectionMultiplexer.Connect("localhost:6379");
-IDatabase db = redis.GetDatabase();
-// String operations
-db.StringSet("mykey", "myvalue");
-string value = db.StringGet("mykey");
-Console.WriteLine(value);
-// List operations
-db.ListLeftPush("mylist", "value1");
-db.ListLeftPush("mylist", "value2");
-RedisValue[] listValues = db.ListRange("mylist");
-Console.WriteLine(listValues.ToList().Aggregate((i,j)=>i.ToString()+j.ToString()));
-// Set operations
-db.SetAdd("myset", "value1");
-db.SetAdd("myset", "value2");
-RedisValue[] setValues = db.SetMembers("myset");
+public class Program
+{
 
-// Hash operations
-db.HashSet("myhash", "field1", "value1");
-db.HashSet("myhash", "field2", "value2");
-RedisValue value1 = db.HashGet("myhash", "field1");
-RedisValue value2 = db.HashGet("myhash", "field2");
-Console.WriteLine(value1);
-Console.WriteLine(value2);
-Console.ReadLine();
+
+    static async Task Main(string[] args)
+    {
+
+        //IDatabase directDb = GetRedisDatabase("172.23.166.71:9091,proxy=envoyproxy");
+        //IDatabase db = GetRedisDatabase("172.23.166.71:9091,proxy=envoyproxy");
+
+        // db.Execute("FLUSHDB");
+
+
+        IDatabase db = CommationManager.CreateAnouyConation();
+        IDatabase directDb = CommationManager.CreateInstancConation();
+        directDb.Execute("FLUSHDB");
+        ///loadTest
+        LoadTest loadTest = new LoadTest(db);
+        RandomData randUpdate = new RandomData(db);
+        await Console.Out.WriteLineAsync("Plaese Enter Number of keys");
+        _ = int.TryParse(Console.ReadLine(), out var number);
+
+        await loadTest.loadTest(number);
+        await randUpdate.UpdateData(number);
+
+        Console.WriteLine("Completed");
+        Console.ReadLine();
+    }
+
+}
