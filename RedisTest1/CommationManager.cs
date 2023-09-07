@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using HybridRedisCache;
 using StackExchange.Redis;
 
 namespace RedisTest1
@@ -31,5 +32,20 @@ namespace RedisTest1
             return redis.GetDatabase();
         }
 
+        public static HybridCache hybridCache()
+        {
+            var options = new HybridCachingOptions()
+            {
+                DefaultLocalExpirationTime = TimeSpan.FromMinutes(1),
+                DefaultDistributedExpirationTime = TimeSpan.FromDays(1),
+                InstancesSharedName = "SampleApp",
+                ThrowIfDistributedCacheError = true,
+                RedisConnectString = "localhost",
+                // BusRetryCount = 10,
+                EnableLogging = true,
+                FlushLocalCacheOnBusReconnection = true,
+            };
+            return new HybridCache(options);
+        }
     }
 }

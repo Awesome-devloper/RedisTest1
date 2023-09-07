@@ -14,6 +14,7 @@ namespace RedisTest1
     public class LoadTest
     {
         private readonly IDatabase db;
+        private readonly Iread
         public LoadTest(IDatabase connection)
         {
             db = connection;
@@ -59,16 +60,6 @@ namespace RedisTest1
         }
 
 
-        private async ValueTask SetValueAsync(int item)
-        {
-            await db.StringSetAsync(item.ToString(), msg + item);
-        }
-
-        private async ValueTask GetValueAsync(int item)
-        {
-            var value = await db.StringGetAsync(item.ToString());
-            var actual = msg + item.ToString();
-            Assert.AreEqual<string>(actual, value);
-        }
+ 
     }
 }
