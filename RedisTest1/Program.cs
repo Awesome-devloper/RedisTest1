@@ -1,9 +1,11 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RedisTest1;
+using RedisTest1.Repository;
 using StackExchange.Redis;
 using System.Collections.Concurrent;
 using System.Net;
 using System.Threading.Channels;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 public class Program
 {
@@ -22,14 +24,29 @@ public class Program
         IDatabase directDb = CommationManager.CreateInstancConation();
         directDb.Execute("FLUSHDB");
         ///loadTest
-        LoadTest loadTest = new LoadTest(db);
-        RandomData randUpdate = new RandomData(db);
+        ///
+        await Console.Out.WriteLineAsync("for distrbation mode plaese press 2");
+
+        var mode=Console.ReadLine();
+        LoadTest loadTest;
+        RandomData randUpdate;
+        if (mode == "1")
+        {
+            var redisCacheRepository = new RedisCacheRepository(db);
+            loadTest = new LoadTest(redisCacheRepository);
+            randUpdate = new RandomData(redisCacheRepository);
+        }
+        else
+        {
+
+            var hybridCarch = new HybridCarchRepository(CommationManager.hybridCache());
+            loadTest = new LoadTest(hybridCarch);
+            randUpdate = new RandomData(hybridCarch);
+        }
         await Console.Out.WriteLineAsync("Plaese Enter Number of keys");
         _ = int.TryParse(Console.ReadLine(), out var number);
-
         await loadTest.loadTest(number);
         await randUpdate.UpdateData(number);
-
         Console.WriteLine("Completed");
         Console.ReadLine();
     }

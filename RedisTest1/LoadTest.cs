@@ -1,23 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Diagnostics;
-using System.Diagnostics.Metrics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using System.Diagnostics;
+using RedisTest1.Repository;
 using StackExchange.Redis;
 
 namespace RedisTest1
 {
     public class LoadTest
     {
-        private readonly IDatabase db;
-        private readonly Iread
-        public LoadTest(IDatabase connection)
+        private readonly IRepository _repository;
+        public LoadTest(IRepository repository)
         {
-            db = connection;
+            _repository = repository;
         }
         const string msg = "Hello Aref For Instatans: ";
 
@@ -35,9 +27,9 @@ namespace RedisTest1
             {
                 Interlocked.Increment(ref counter);
                 if (counter % 100000 == 0)
-                    Console.WriteLine("Write " + counter + " time :" + stopwatch.ElapsedMilliseconds / 1000+ "sec");
+                    Console.WriteLine("Write " + counter + " time :" + stopwatch.ElapsedMilliseconds / 1000 + "sec");
 
-                return SetValueAsync(item);
+                return _repository.SetValueAsync(item, msg);
             });
             stopwatch.Stop();
             Console.WriteLine($"Scenario 1: Fnish Frist Step {stopwatch.ElapsedMilliseconds / 1000} sec");
@@ -52,7 +44,7 @@ namespace RedisTest1
                 if (counter % 100000 == 0)
                     Console.WriteLine("Read " + counter + " time :" + stopwatch.ElapsedMilliseconds / 1000 + "sec");
 
-                return GetValueAsync(item);
+                return _repository.GetValueAsync(item, msg);
             });
             stopwatch.Stop();
             Console.WriteLine($"Scenario 2: Fnish Frist Step {stopwatch.ElapsedMilliseconds / 1000} sec");
@@ -60,6 +52,6 @@ namespace RedisTest1
         }
 
 
- 
+
     }
 }
