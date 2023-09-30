@@ -23,7 +23,7 @@ namespace RedisTest1
             int numberOfKey = arrayLength/100;
             int counter = 0;
             Dictionary<int, string> value = CreateDictionary(arrayLength, numberOfKey);
-            await Parallel.ForEachAsync(value, new ParallelOptions() { MaxDegreeOfParallelism = 36 },
+            await Parallel.ForEachAsync(value, new ParallelOptions() { MaxDegreeOfParallelism = 40 },
             (item, cancelToken) =>
             {
                 Interlocked.Increment(ref counter);
