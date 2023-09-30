@@ -31,7 +31,7 @@ namespace RedisTest1
                 if (counter % 1000 == 0)
                     Console.WriteLine("UpdateWrite " + counter);
 
-                return _repository.SetValueAsync(item.Key,item.Value);
+                return _repository.SetAndGetValueAsync(item.Key,item.Value);
             });
             Console.WriteLine("Finsh All Update Exactlly");
         }
