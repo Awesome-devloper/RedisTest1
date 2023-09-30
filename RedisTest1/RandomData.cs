@@ -7,16 +7,17 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using RedisTest1.Repository;
 using StackExchange.Redis;
 
 namespace RedisTest1
 {
     public class RandomData
     {
-        private readonly IDatabase db;
-        public RandomData(IDatabase connection)
+        private readonly IRepository _repository;
+        public RandomData(IRepository connection)
         {
-            db = connection;
+            _repository = connection;
         }
         public async Task UpdateData(Int32 arrayLength)
         {
@@ -30,7 +31,7 @@ namespace RedisTest1
                 if (counter % 1000 == 0)
                     Console.WriteLine("UpdateWrite " + counter);
 
-                return SetValueAsync(item.Key,item.Value);
+                return _repository.SetValueAsync(item.Key,item.Value);
             });
             Console.WriteLine("Finsh All Update Exactlly");
         }
@@ -51,11 +52,6 @@ namespace RedisTest1
             return keyValues;
 
         }
-        private async ValueTask SetValueAsync(int item, string message)
-        {
-            await db.StringSetAsync(item.ToString(), message);
-            var result = await db.StringGetAsync(item.ToString());
-            Assert.AreEqual<string>(message, result);
-        }
+
     }
 }

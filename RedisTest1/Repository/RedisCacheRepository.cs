@@ -15,7 +15,7 @@ namespace RedisTest1.Repository
         {
             _db = db;
         }
-        public async ValueTask SetValueAsync(int item,string msg)
+        public async ValueTask SetValueAsync(int item, string msg)
         {
             await _db.StringSetAsync(item.ToString(), msg + item);
         }
@@ -25,6 +25,13 @@ namespace RedisTest1.Repository
             var value = await _db.StringGetAsync(item.ToString());
             var actual = msg + item.ToString();
             Assert.AreEqual<string>(actual, value);
+        }
+
+        public async ValueTask SetAndGetValueAsync(int item, string message)
+        {
+            await _db.StringSetAsync(item.ToString(), message);
+            var result = await _db.StringGetAsync(item.ToString());
+            Assert.AreEqual<string>(message, result);
         }
     }
 }
